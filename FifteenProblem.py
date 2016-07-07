@@ -1,7 +1,21 @@
+import sys
+
 def main():
-    import sys
-    # Perform input validation
+    from collections import deque
+    global endState 
+    global initialState
+    global searchMethod
+    global options
+    global fringe
+    global visitedStates
+
+    endState =  "123456789ABCDEF "
+
+    fringe = deque()
+    visitedStates = set()
     validInput = True
+
+    # Perform input validation
     if (len(sys.argv) < 3 or len(sys.argv) > 4) :
         print("Invalid Command Line Arguments!")
     else :
@@ -28,6 +42,9 @@ def main():
                 validInput = False
     if (validInput) :
         print("Valid Input!")
+        treeRoot = constructRoot()
+        if (searchMethod.lower() == "bfs" or searchMethod.lower() == "dfs") :
+            BFSorDFS(treeRoot)
 
 # This function checks if the initial state input by the user is valid. 
 def checkInitState(initState) :
@@ -62,15 +79,70 @@ def checkOptions(searchMethod, options) :
         result = False
     return result
 
-def constructTree(theInitialState):
+def BFSorDFS(treeRoot) :
+    visitedStates.add(treeRoot.data)
+    if (searchMethod.lower() == "dfs") :
+        DFS(treeRoot)
+
+def DFS(node) :
+    checkRight = moveRight(node.data)
+    if (checkRight != -1) :
+        fringe.append(node)
+        DFS(checkRight)
+    else :
+        print("not right")
+
+# If the blank spot can be moved right then this will do so and return a new string with 
+# the updated state.
+# If the blank spot is as far right as it can go, then this will return
+# -1
+def moveRight(state) :
+    currState = list(state)
+    spaceIndex = currState.index(' ')
+    print(spaceIndex)
+    if (spaceIndex % 4 == 3) :
+        print("Space Index modded", spaceIndex % 4)
+        return -1
+    else :
+        swapChar = currState[spaceIndex + 1]
+        currState[spaceIndex] = swapChar
+        currState[spaceIndex + 1] = ' '
+        result = Node()
+        result.data = currState
+        outputPuzzle(currState) # output
+        return result
+
+def moveDown(state) :
+    currState = list(state)
+
+
+    outputPuzzle(currState)
+
+def constructRoot():
     root = Node()
-    root.data = theInitialState
-    print(root.data)
+    root.data = initialState
+    return root
     
+# outputs the entire puzzle in an easier to read format to console.
+def outputPuzzle(state) :
+    currState = list(state)
+    counter = 0
+    for x in currState :
+        if (counter % 4 == 3) :
+            print(x)
+        else :
+            sys.stdout.write(x)
+            sys.stdout.write("  ")
+        counter += 1
+    print()
+
+# inner class used to represent nodes on tree
 class Node(object):
-    def initNode(aNode):
-        aNode.left = None
-        aNode.right = None
-        aNode.data = None
+    def __init__(node):
+        node.right = None
+        node.ctrRight = None
+        node.ctrLeft = None
+        node.left = None
+        node.data = None
 
 main()
