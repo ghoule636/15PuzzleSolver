@@ -1,15 +1,17 @@
 import sys
+from collections import deque
 
 def main():
-    from collections import deque
-    global endState 
+    global endState1
+    global endState2
     global initialState
     global searchMethod
     global options
     global fringe
     global visitedStates
 
-    endState =  "123456789ABCDEF "
+    endState1 =  "123456789ABCDEF "
+    endState2 =  "123456789ABCDFE "
 
     fringe = deque()
     visitedStates = set()
@@ -18,6 +20,7 @@ def main():
     # Perform input validation
     if (len(sys.argv) < 3 or len(sys.argv) > 4) :
         print("Invalid Command Line Arguments!")
+        validInput = False;
     else :
         initialState = sys.argv[1]
         searchMethod = sys.argv[2]
@@ -28,7 +31,8 @@ def main():
             print("Invalid search method. Valid methods are: BFS, DFS, GBFS, ASTAR, DLS")
             validInput = False
         else : # Valid Initial State and search method here
-            print("Initial State: " + initialState)
+            print("Initial State: ")
+            outputPuzzle(initialState)
             print("Search Method: " + searchMethod)
             if (len(sys.argv) == 4) :
                 options = sys.argv[3]
@@ -82,15 +86,47 @@ def checkOptions(searchMethod, options) :
 def BFSorDFS(treeRoot) :
     visitedStates.add(treeRoot.data)
     if (searchMethod.lower() == "dfs") :
-        DFS(treeRoot)
+        DFS(treeRoot, 0)
 
-def DFS(node) :
+def DFS(node, depth) :
+    if (node.data == endState1 or node.data == endState2) :
+        print("Puzzle complete")
+        print(depth)
+        return 1
     checkRight = moveRight(node.data)
     if (checkRight != -1) :
+        outputPuzzle(checkRight.data)
         fringe.append(node)
-        DFS(checkRight)
-    else :
-        print("not right")
+        #print(checkRight.data)
+        visitedStates.add(checkRight.data)
+        #node.data = checkRight.data
+        if (DFS(checkRight, depth + 1) == 1) :
+            return 1
+    checkDown = moveDown(node.data)
+    if (checkDown != -1) :
+        outputPuzzle(checkDown.data)
+        fringe.append(node)
+        visitedStates.add(checkDown.data)
+        #node.data = checkDown.data
+        if (DFS(checkDown, depth + 1) == 1) :
+            return 1
+    checkLeft = moveLeft(node.data)
+    if (checkLeft != -1) :
+        outputPuzzle(checkLeft.data)
+        fringe.append(node)
+        visitedStates.add(checkLeft.data)
+        if (DFS(checkLeft, depth + 1) == 1) :
+            return 1
+    checkUp = moveUp(node.data)
+    if (checkUp != -1) :
+        outputPuzzle(checkUp.data)
+        fringe.append(node)
+        visitedStates.add(checkUp.data)
+        if (DFS(checkUp, depth + 1) == 1) :
+            return 1
+
+    return
+
 
 # If the blank spot can be moved right then this will do so and return a new string with 
 # the updated state.
@@ -99,25 +135,74 @@ def DFS(node) :
 def moveRight(state) :
     currState = list(state)
     spaceIndex = currState.index(' ')
-    print(spaceIndex)
+    #print(spaceIndex)
     if (spaceIndex % 4 == 3) :
-        print("Space Index modded", spaceIndex % 4)
+        #print("Space Index modded", spaceIndex % 4)
         return -1
     else :
         swapChar = currState[spaceIndex + 1]
         currState[spaceIndex] = swapChar
         currState[spaceIndex + 1] = ' '
-        result = Node()
-        result.data = currState
-        outputPuzzle(currState) # output
-        return result
+        if (''.join(currState) in visitedStates) :
+            return -1
+        else :
+            result = Node()
+            result.data = ''.join(currState)
+            #outputPuzzle(currState)
+            return result
+
+def moveLeft(state) :
+    currState = list(state)
+    spaceIndex = currState.index(' ')
+    if (spaceIndex % 4 == 0) :
+        return -1
+    else :
+        swapChar = currState[spaceIndex - 1]
+        currState[spaceIndex] = swapChar
+        currState[spaceIndex - 1] = ' '
+        if (''.join(currState) in visitedStates) :
+            return -1
+        else :
+            result = Node()
+            result.data = ''.join(currState)
+            #outputPuzzle(currState)
+            return result
+
+def moveUp(state) :
+    currState = list(state)
+    spaceIndex = currState.index(' ')
+    if (spaceIndex < 4) :
+        return -1
+    else :
+        swapChar = currState[spaceIndex - 4]
+        currState[spaceIndex] = swapChar
+        currState[spaceIndex - 4] = ' '
+        if (''.join(currState) in visitedStates) :
+            return -1
+        else :
+            result = Node()
+            result.data = ''.join(currState)
+            #outputPuzzle(currState)
+            return result
 
 def moveDown(state) :
     currState = list(state)
+    spaceIndex = currState.index(' ')
+    if (spaceIndex >= 12) :
+        return -1
+    else :
+        swapChar = currState[spaceIndex + 4]
+        currState[spaceIndex] = swapChar
+        currState[spaceIndex + 4] = ' '
+        if (''.join(currState) in visitedStates) :
+            return -1
+        else :
+            result = Node()
+            result.data = ''.join(currState)
+            #outputPuzzle(currState)
+            return result
 
-
-    outputPuzzle(currState)
-
+# Constructs default tree root.
 def constructRoot():
     root = Node()
     root.data = initialState
