@@ -1,3 +1,9 @@
+"""
+# Gabriel Houle
+# Programming Assignment 1
+# TCSS 435 AI Spring 2016
+"""
+
 import sys
 from collections import deque
 import heapq
@@ -54,17 +60,12 @@ def main():
                 validInput = False
     if (validInput) :
         print("Valid Input!")
-        time.sleep(2)
+        #time.sleep(5)
         treeRoot = constructRoot()
         if (searchMethod.lower() == "bfs" or searchMethod.lower() == "dfs" or searchMethod.lower() == "dls") :
             BFSorDFS(treeRoot)
         if (searchMethod.lower() == "gbfs" or searchMethod.lower() == "astar") :
             GBFSorASTAR(treeRoot)
-            #if (options == "h1") :
-            #    GBFSorASTAR(treeRoot, h1)
-            #elif (options == "h2") :
-            #    GBFSorASTAR(treeRoot, h2)
-
 
 # This function checks if the initial state input by the user is valid. 
 def checkInitState(initState) :
@@ -243,10 +244,6 @@ def GBFSorASTAR(node) :
             checkRight.depth = node.depth + 1
             heapq.heappush(fringe, checkRight)
             visitedStates.add(checkRight.data)
-        if (len(fringe) != 0) :
-            node = heapq.heappop(fringe)
-        outputPuzzle(node.data)
-
         if (len(fringe) == 0) :
             print("No solution found")
             print("Depth: ", end='')
@@ -258,11 +255,15 @@ def GBFSorASTAR(node) :
             print("Max Fringe Size: ", end='')
             print(0)
             return
+        if (len(fringe) != 0) :
+            node = heapq.heappop(fringe)
+        #outputPuzzle(node.data)
 
         if (searchMethod.lower() == "gbfs") :
             fringe = []
 
     print("Puzzle complete")
+    outputPuzzle(node.data)
     print("Depth: ", end='')
     print(node.depth)
     print("Nodes Created: ", end='')
