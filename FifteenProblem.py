@@ -219,8 +219,7 @@ def GBFSorASTAR(node) :
     fringe = []
 
     while (node.data != endState1 and node.data != endState2) :
-        if (len(fringe) > maxFringe):
-            maxFringe = len(fringe)
+        
 
         checkUp = moveUp(node.data)
         checkLeft = moveLeft(node.data)
@@ -255,6 +254,8 @@ def GBFSorASTAR(node) :
             print("Max Fringe Size: ", end='')
             print(0)
             return
+        if (len(fringe) > maxFringe):
+            maxFringe = len(fringe)
         if (len(fringe) != 0) :
             node = heapq.heappop(fringe)
         #outputPuzzle(node.data)
