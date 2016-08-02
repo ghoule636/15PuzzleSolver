@@ -1,4 +1,4 @@
-Bread First Search Output:
+Breadth First Search Output:
 
 C:\Users\Gabriel\Source\Repos\15PuzzleSolver>py fifteenproblem.py "123456789 ABCDEF" bfs
 Initial State:

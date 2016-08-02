@@ -218,31 +218,32 @@ def GBFSorASTAR(node) :
 
     fringe = []
 
+    node.totalCost = 0
+
     while (node.data != endState1 and node.data != endState2) :
         
+        checks = [0 for i in range(4)] 
+        checks[0] = moveUp(node.data)
+        checks[1] = moveLeft(node.data)
+        checks[2] = moveDown(node.data)
+        checks[3] = moveRight(node.data)
 
-        checkUp = moveUp(node.data)
-        checkLeft = moveLeft(node.data)
-        checkDown = moveDown(node.data)
-        checkRight = moveRight(node.data)
         expanded += 1
 
-        if (checkUp != -1) :
-            checkUp.depth = node.depth + 1
-            heapq.heappush(fringe, checkUp)
-            visitedStates.add(checkUp.data)
-        if (checkLeft != -1) :
-            checkLeft.depth = node.depth + 1
-            heapq.heappush(fringe, checkLeft)
-            visitedStates.add(checkLeft.data)
-        if (checkDown != -1) :
-            checkDown.depth = node.depth + 1
-            heapq.heappush(fringe, checkDown)
-            visitedStates.add(checkDown.data)
-        if (checkRight != -1) :
-            checkRight.depth = node.depth + 1
-            heapq.heappush(fringe, checkRight)
-            visitedStates.add(checkRight.data)
+        for i in range(len(checks)) :
+            if (checks[i] != -1) :
+                 if (searchMethod.lower() == "astar") :
+                     if (options.lower() == "h1") :
+                         addedValue = h1(node.data)
+                     else :
+                         addedValue = h2(node.data)
+                     checks[i].totalCost = node.totalCost + addedValue
+                 else :
+                     checks[i].totalCost = 0
+                 checks[i].depth = node.depth + 1
+                 heapq.heappush(fringe, checks[i])
+                 visitedStates.add(checks[i].data)
+                   
         if (len(fringe) == 0) :
             print("No solution found")
             print("Depth: ", end='')
@@ -428,6 +429,7 @@ class Node(object):
         node.left = None
         node.data = None
         node.depth = None
+        node.totalCost = None
 
     def __repr__(self) :
         if (searchMethod == "gbfs" or searchMethod == "astar") :
@@ -439,9 +441,9 @@ class Node(object):
     def __lt__(self, other) :
         if (searchMethod == "gbfs" or searchMethod == "astar") :
             if (options == "h1") :
-                return h1(self.data) < h1(other.data)
+                return h1(self.data) + self.totalCost < h1(other.data) + other.totalCost
             else :
-                return h2(self.data) < h2(other.data)
+                return h2(self.data) + self.totalCost < h2(other.data) + other.totalCost
         else :
             return 0
 
