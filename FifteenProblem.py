@@ -103,7 +103,7 @@ def checkOptions(searchMethod, options) :
         if (options.lower() != "h1" and options.lower() != "h2") :
             result = False
     elif (searchMethod.lower() != "dls") :
-        result = false
+        result = False
     return result
 
 def BFSorDFS(node) :
@@ -132,7 +132,16 @@ def BFSorDFS(node) :
             if (len(fringe) != 0) :
                 node = fringe.pop()
             else :
-                return 0
+                print("No solution found")
+                print("Depth: ", end='')
+                print(-1)
+                print("Nodes Created: ", end='')
+                print(0)
+                print("Expanded: ", end='')
+                print(0)
+                print("Max Fringe Size: ", end='')
+                print(0)
+                return
         if (node.data == endState1 or node.data == endState2) :
             print("Puzzle complete")
             print("Depth: ", end='')
@@ -191,18 +200,29 @@ def BFSorDFS(node) :
             if (len(fringe) != 0) :
                 node = fringe.popleft()
 
-        outputPuzzle(node.data)
+        #outputPuzzle(node.data)
 
-    print("Nodes Created: ", end='')
-    print(numCreated)
-    print("Expanded: ", end='')
-    print(expanded)
-    print("Max Fringe Size: ", end='')
-    print(maxFringe)
-    print("Depth: ", end='')
-    print(node.depth)
-    print("fringe len")
-    print(len(fringe))
+    if (node.data != endState1 and node.data != endState2) :
+        print("No solution found")
+        print("Depth: ", end='')
+        print(-1)
+        print("Nodes Created: ", end='')
+        print(0)
+        print("Expanded: ", end='')
+        print(0)
+        print("Max Fringe Size: ", end='')
+        print(0)
+    else :
+        print("Nodes Created: ", end='')
+        print(numCreated)
+        print("Expanded: ", end='')
+        print(expanded)
+        print("Max Fringe Size: ", end='')
+        print(maxFringe)
+        print("Depth: ", end='')
+        print(node.depth)
+        print("fringe len")
+        print(len(fringe))
 
 def GBFSorASTAR(node) :
     global endState1
@@ -221,12 +241,11 @@ def GBFSorASTAR(node) :
     node.totalCost = 0
 
     while (node.data != endState1 and node.data != endState2) :
-        
         checks = [0 for i in range(4)] 
-        checks[0] = moveUp(node.data)
-        checks[1] = moveLeft(node.data)
-        checks[2] = moveDown(node.data)
-        checks[3] = moveRight(node.data)
+        checks[0] = moveRight(node.data)
+        checks[1] = moveDown(node.data)
+        checks[2] = moveLeft(node.data)
+        checks[3] = moveUp(node.data)
 
         expanded += 1
 
@@ -259,13 +278,12 @@ def GBFSorASTAR(node) :
             maxFringe = len(fringe)
         if (len(fringe) != 0) :
             node = heapq.heappop(fringe)
-        #outputPuzzle(node.data)
-
+            
         if (searchMethod.lower() == "gbfs") :
             fringe = []
 
     print("Puzzle complete")
-    outputPuzzle(node.data)
+    #outputPuzzle(node.data)
     print("Depth: ", end='')
     print(node.depth)
     print("Nodes Created: ", end='')
@@ -446,6 +464,5 @@ class Node(object):
                 return h2(self.data) + self.totalCost < h2(other.data) + other.totalCost
         else :
             return 0
-
 
 main()
