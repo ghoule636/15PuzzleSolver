@@ -9,6 +9,7 @@ from collections import deque
 import heapq
 from functools import total_ordering
 import time
+from PuzzleGraphics import displayBoard
 
 def main():
     global endState1
@@ -21,6 +22,7 @@ def main():
     global expanded
     global maxFringe
     global numCreated
+    global path
 
     endState1 =  "123456789ABCDEF "
     endState2 =  "123456789ABCDFE "
@@ -30,6 +32,7 @@ def main():
     numCreated = 0
     visitedStates = set()
     validInput = True
+    path = []
 
     # Perform input validation
     if (len(sys.argv) < 3 or len(sys.argv) > 4) :
@@ -66,6 +69,11 @@ def main():
             BFSorDFS(treeRoot)
         if (searchMethod.lower() == "gbfs" or searchMethod.lower() == "astar") :
             GBFSorASTAR(treeRoot)
+
+    #display = displayBoard()
+    #time.sleep(5)
+    #display.close()
+    print(path)
 
 # This function checks if the initial state input by the user is valid. 
 def checkInitState(initState) :
@@ -259,6 +267,7 @@ def GBFSorASTAR(node) :
                      checks[i].totalCost = node.totalCost + addedValue
                  else :
                      checks[i].totalCost = 0
+                 checks[i].parent = node
                  checks[i].depth = node.depth + 1
                  heapq.heappush(fringe, checks[i])
                  visitedStates.add(checks[i].data)
@@ -292,7 +301,19 @@ def GBFSorASTAR(node) :
     print(expanded)
     print("Max Fringe Size: ", end='')
     print(maxFringe)
+    calculatePath(node)
 
+def calculatePath(node) :
+    global path
+    temp = deque()
+
+    while (node.parent != None) :
+        temp.append(node)
+        node = node.parent
+
+    temp.append(node)
+    while (len(temp) != 0) :
+        path.append(temp.pop())
 
 # This Heuristic uses the number of misplaced tiles as a measure of fitness.
 def h1(state) :
@@ -448,6 +469,7 @@ class Node(object):
         node.data = None
         node.depth = None
         node.totalCost = None
+        node.parent = None
 
     def __repr__(self) :
         if (searchMethod == "gbfs" or searchMethod == "astar") :
