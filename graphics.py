@@ -1,4 +1,5 @@
-# graphics.py
+# I used this library to display the graphics for my 15puzzle.
+# I have only slightly modified the code within to fit my needs.
 """Simple object oriented graphics library  
 
 The library is designed to make it very easy for novice programmers to
@@ -358,6 +359,11 @@ class GraphWin(tk.Canvas):
     def delItem(self, item):
         self.items.remove(item)
 
+    def clear(self) :
+        for item in self.items[:]:
+             item.undraw()
+        self.items = []
+
     def redraw(self):
         for item in self.items[:]:
             item.undraw()
@@ -445,7 +451,7 @@ class GraphicsObject:
         is already visible."""
 
         if self.canvas and not self.canvas.isClosed(): raise GraphicsError(OBJ_ALREADY_DRAWN)
-        if graphwin.isClosed(): raise GraphicsError("Can't draw to closed window")
+        if graphwin.isClosed(): return #raise GraphicsError("Can't draw to closed window")
         self.canvas = graphwin
         self.id = self._draw(graphwin, self.config)
         graphwin.addItem(self)

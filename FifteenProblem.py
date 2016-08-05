@@ -32,7 +32,7 @@ def main():
     numCreated = 0
     visitedStates = set()
     validInput = True
-    path = []
+    path = -1
 
     # Perform input validation
     if (len(sys.argv) < 3 or len(sys.argv) > 4) :
@@ -69,11 +69,9 @@ def main():
             BFSorDFS(treeRoot)
         if (searchMethod.lower() == "gbfs" or searchMethod.lower() == "astar") :
             GBFSorASTAR(treeRoot)
+    if (path != -1) :
+        display = displayBoard(path)
 
-    #display = displayBoard()
-    #time.sleep(5)
-    #display.close()
-    print(path)
 
 # This function checks if the initial state input by the user is valid. 
 def checkInitState(initState) :
@@ -125,6 +123,7 @@ def BFSorDFS(node) :
     global expanded
     global maxFringe
     global numCreated
+    global path
 
     fringe = deque()
     checkUp = 1
@@ -140,6 +139,7 @@ def BFSorDFS(node) :
             if (len(fringe) != 0) :
                 node = fringe.pop()
             else :
+                path = -1
                 print("No solution found")
                 print("Depth: ", end='')
                 print(-1)
@@ -160,7 +160,7 @@ def BFSorDFS(node) :
             print(expanded)
             print("Max Fringe Size: ", end='')
             print(maxFringe)
-            
+            calculatePath(node)
             return 1
         checkUp = moveUp(node.data)
         checkLeft = moveLeft(node.data)
@@ -170,18 +170,22 @@ def BFSorDFS(node) :
 
         if (searchMethod.lower() == "dfs" or searchMethod.lower() == "dls") :
             if (checkUp != -1) :
+                checkUp.parent = node
                 checkUp.depth = node.depth + 1
                 fringe.append(checkUp)
                 visitedStates.add(checkUp.data)
             if (checkLeft != -1) :
+                checkLeft.parent = node
                 checkLeft.depth = node.depth + 1
                 fringe.append(checkLeft)
                 visitedStates.add(checkLeft.data)
             if (checkDown != -1) :
+                checkDown.parent = node
                 checkDown.depth = node.depth + 1
                 fringe.append(checkDown)
                 visitedStates.add(checkDown.data)
             if (checkRight != -1) :
+                checkRight.parent = node
                 checkRight.depth = node.depth + 1
                 fringe.append(checkRight)
                 visitedStates.add(checkRight.data)
@@ -189,18 +193,22 @@ def BFSorDFS(node) :
                 node = fringe.pop()
         elif (searchMethod.lower() == "bfs") :
             if (checkRight != -1) :
+                checkRight.parent = node
                 checkRight.depth = node.depth + 1
                 fringe.append(checkRight)
                 visitedStates.add(checkRight.data)
             if (checkDown != -1) :
+                checkDown.parent = node
                 checkDown.depth = node.depth + 1
                 fringe.append(checkDown)
                 visitedStates.add(checkDown.data)
             if (checkLeft != -1) :
+                checkLeft.parent = node
                 checkLeft.depth = node.depth + 1
                 fringe.append(checkLeft)
                 visitedStates.add(checkLeft.data)
             if (checkUp != -1) :
+                checkUp.parent = node
                 checkUp.depth = node.depth + 1
                 fringe.append(checkUp)
                 visitedStates.add(checkUp.data)
@@ -211,6 +219,7 @@ def BFSorDFS(node) :
         #outputPuzzle(node.data)
 
     if (node.data != endState1 and node.data != endState2) :
+        path = -1
         print("No solution found")
         print("Depth: ", end='')
         print(-1)
@@ -231,6 +240,7 @@ def BFSorDFS(node) :
         print(node.depth)
         print("fringe len")
         print(len(fringe))
+        calculatePath(node)
 
 def GBFSorASTAR(node) :
     global endState1
@@ -243,6 +253,7 @@ def GBFSorASTAR(node) :
     global expanded
     global maxFringe
     global numCreated
+    global path
 
     fringe = []
 
@@ -273,6 +284,7 @@ def GBFSorASTAR(node) :
                  visitedStates.add(checks[i].data)
                    
         if (len(fringe) == 0) :
+            path = -1
             print("No solution found")
             print("Depth: ", end='')
             print(-1)
@@ -282,6 +294,7 @@ def GBFSorASTAR(node) :
             print(0)
             print("Max Fringe Size: ", end='')
             print(0)
+            
             return
         if (len(fringe) > maxFringe):
             maxFringe = len(fringe)
@@ -305,6 +318,7 @@ def GBFSorASTAR(node) :
 
 def calculatePath(node) :
     global path
+    path = []
     temp = deque()
 
     while (node.parent != None) :
