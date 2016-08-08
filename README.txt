@@ -1,3 +1,5 @@
+Gabriel Houle
+
 I have added a graphical display of the solution to this program. The graphics window will open up after a solution has been found normally. Upon opening the window will trace the path to the solution performing around 1 move per second. The window can be closed using the q key. I used a third party graphics library to help graphics.py. If no solution is found the graphics window will not open.
 
 Time comparisons: For the time comparisons I used a common puzzle. Due to DFS having trouble with any complicated puzzle I used a basic puzzle : (123456789ABC DEF) These times were all very similar due to the simplicity of the puzzle. In the individual results for each solution I have included additional time comparison information to supplement this table.
