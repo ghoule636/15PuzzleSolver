@@ -48,7 +48,7 @@ def main():
             print("Invalid search method. Valid methods are: BFS, DFS, GBFS, ASTAR, DLS")
             validInput = False
         else : # Valid Initial State and search method here
-            print("Initial State: ")
+            print("\nInitial State: ")
             outputPuzzle(initialState)
             print("Search Method: " + searchMethod.upper())
             if (len(sys.argv) == 4) :
@@ -64,11 +64,14 @@ def main():
     if (validInput) :
         print("Valid Input!")
         #time.sleep(5)
+        start = time.clock()
         treeRoot = constructRoot()
         if (searchMethod.lower() == "bfs" or searchMethod.lower() == "dfs" or searchMethod.lower() == "dls") :
             BFSorDFS(treeRoot)
         if (searchMethod.lower() == "gbfs" or searchMethod.lower() == "astar") :
             GBFSorASTAR(treeRoot)
+        total = time.clock() - start
+        print("Time to complete: {:10.4f}ms\n".format(total * 1000))
     if (path != -1) :
         display = displayBoard(path)
 

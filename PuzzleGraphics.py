@@ -23,7 +23,6 @@ class displayBoard:
         isClosed = False
         self.__window = GraphWin("15 Puzzle Solver", width, height)
         self.__path = path
-
         self.startTimer()
         self.displayPath()
 
